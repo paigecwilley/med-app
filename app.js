@@ -8,16 +8,22 @@ var exhaleExists = false;
 var inhaleBegin;
 var exhaleInitiation;
 
-intBreathObj = {};
-intBreathArr = [];
+// intBreathObj = {};
 
-breathObj = {};
-breathArr = [];
+var intBreathArr = [];
+
+
+var breathArr = [];
+
+
 
 
 //On keydown of space bar, initiate inhale 
-$(document).keydown(function(e){
+$("body").on("keydown", (function(e){
+	
+if(intBreathArr.length <= 5){
 	var inhaleInitiation;
+	console.log('The keydown works');
 
 	if(e.keyCode === 32){
 		// console.log("thy keydown works");
@@ -26,45 +32,65 @@ $(document).keydown(function(e){
 		inhaleSecs.push(inhaleInitiation);
 
 	}
-
-
+}
 // console.log(inhaleSecs);
 
-})
+}))
+
 
 
 
 //Initiate beginning of exhale on keyup
-$(document).keyup(function(e){
-
+$("body").on("keyup", (function(e){
+	var intBreathObj = {};
 	inhaleBegin = inhaleSecs[0];
 	inhaleSecs = [];
-	console.log('Here is the inhale beginning ' + inhaleSecs);
-	if(e.keyCode === 32){
+	// console.log('Here is the inhale beginning ' + inhaleSecs);
+	
+	if(intBreathArr.length <= 5){
+		if(e.keyCode === 32){
 		// console.log('the keyup works');
 		exhaleInitiation = Date.now();
 		console.log(exhaleInitiation);
 	}
+
+
 	// var inhaleLength = exhaleInitiation-inhaleBegin;
 	// console.log("inhale length " +inhaleLength);
 
 	intBreathObj.inhaleTS=inhaleBegin;
 	intBreathObj.exhaleTS=exhaleInitiation;
+
+	console.log('intBreathObj:', intBreathObj)
 	// console.log('Intermediate breath obj ', intBreathObj);
-	intBreathObj = {};
+	
 	intBreathArr.push(intBreathObj);
 	// console.log("Int Arr: ", intBreathArr);
+	console.log("Intermediate Breath Array: ", intBreathArr);
 
-	for(var i = 0; i < intBreathArr.length; i++){
+	if(intBreathArr.length === 6){
+		createBreathObjArr();
+	}
+}
+
+}))
+
+
+
+	
+function createBreathObjArr(){
+for(var i = 0; i < intBreathArr.length; i++){
+	var breathObj = {};
 			breathObj.inhaleLength = intBreathArr[i].exhaleTS - intBreathArr[i].inhaleTS;
-			breathObj.exhaleLength = intBreathArr[i].exhaleTS - intBreathArr[i + 1].inhaleTS;
+			breathObj.exhaleLength = intBreathArr[i + 1].inhaleTS - intBreathArr[i].exhaleTS;
 			breathObj.totalLength = breathObj.inhaleLength + breathObj.exhaleLength;
 			console.log("breath Obj: " , breathObj);
 			breathArr.push(breathObj);
+			// breathObj = {};
 			console.log("breath array: ", breathArr)
 	}
-	
-})
+}
+
 
 
 //Need to get exhale beginning time and get an exhale stop time
